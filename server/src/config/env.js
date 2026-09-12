@@ -72,7 +72,9 @@ export function assertConfig() {
     problems.push('JWT_SECRET and JWT_REFRESH_SECRET must not be equal');
   }
   if (env.nodeEnv === 'production' && !env.cloudinary.cloudName) {
-    problems.push('CLOUDINARY_CLOUD_NAME is required in production for signed uploads');
+    // Not fatal: imagery ships from /img and media uploads answer a clean 501 until
+    // Cloudinary is configured. Warn so ops know the gap without blocking a deploy.
+    console.warn('[luxora] CLOUDINARY_CLOUD_NAME unset — media uploads disabled (501), demo imagery served from /img');
   }
   if (problems.length) {
     throw new Error(
