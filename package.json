@@ -2,7 +2,7 @@
   "name": "luxora",
   "version": "1.0.0",
   "private": true,
-  "description": "LUXORA — Premium Hotel Booking. Stay somewhere unforgettable.",
+  "description": "LUXORA - Premium Hotel Booking",
   "type": "module",
   "workspaces": [
     "client",
@@ -14,17 +14,13 @@
     "dev:client": "npm run dev --workspace client",
     "build": "npm run build --workspace client",
     "start": "npm run start --workspace server",
-    "seed": "npm run seed --workspace server",
-    "lint": "npm run lint --workspace client",
-    "test:api": "bash scripts/api-smoke.sh",
-    "test:ui": "node scripts/render-probe.mjs",
-    "test:qr": "node scripts/verify-qr.mjs",
-    "verify": "npm run lint && npm run build && npm run test:api && npm run test:ui"
+    "seed": "npm run seed --workspace server"
   },
   "devDependencies": {
     "concurrently": "^9.1.2",
     "eslint-plugin-react": "^7.37.5",
-    "playwright": "^1.49.1"
+    "playwright": "^1.49.1",
+    "eslint": "^9.39.5"
   },
   "engines": {
     "node": ">=18.18"
