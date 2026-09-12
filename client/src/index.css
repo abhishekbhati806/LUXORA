@@ -1,0 +1,427 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------------ tokens */
+:root {
+  --canvas: #f4f1ea;
+  --surface: #fbf9f5;
+  --ink: #15130f;
+  --accent: #b08542;
+  --accent-deep: #8a6428;
+  --line: #e0d9cb;
+  --hair: rgba(21, 19, 15, 0.09);
+  --glass: rgba(251, 249, 245, 0.72);
+  --nav-h: 76px;
+  --header-offset: 0px;
+  color-scheme: light;
+}
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-canvas font-sans text-ink antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  /* Fraunces at display sizes; optical sizing keeps small text crisp. */
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: theme('fontFamily.display');
+    font-variation-settings: 'opsz' 96, 'SOFT' 28, 'WONK' 0;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  h4,
+  h5,
+  h6 {
+    font-family: theme('fontFamily.display');
+    font-variation-settings: 'opsz' 24, 'SOFT' 40;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--accent-soft, #ebdcc0);
+    color: var(--ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    font: inherit;
+    color: inherit;
+  }
+
+  input[type='date']::-webkit-calendar-picker-indicator {
+    opacity: 0.45;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  input[type='date']:hover::-webkit-calendar-picker-indicator {
+    opacity: 0.9;
+  }
+
+  /* Firefox/Safari need an explicit fallback for the date placeholder text */
+  input-placeholder,
+  ::placeholder {
+    color: #a29a8c;
+  }
+
+  img {
+    -webkit-user-drag: none;
+  }
+}
+
+/* -------------------------------------------------------------- components */
+@layer components {
+  .shell {
+    @apply mx-auto w-full max-w-shell px-gutter;
+  }
+  .shell-wide {
+    @apply mx-auto w-full px-gutter;
+    max-width: 104rem;
+  }
+
+  .eyebrow {
+    @apply text-micro font-medium uppercase text-muted;
+  }
+  .eyebrow-accent {
+    @apply text-micro font-semibold uppercase text-accent-deep;
+  }
+
+  .lede {
+    @apply text-lead text-ink-2;
+    max-width: 46ch;
+  }
+
+  .hairline {
+    @apply border border-line;
+  }
+
+  /* Surfaces ------------------------------------------------------------ */
+  .card {
+    @apply relative rounded-lg border border-line bg-surface shadow-rest;
+  }
+  .card-flat {
+    @apply relative rounded-lg border border-line bg-surface;
+  }
+  .glass {
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    backdrop-filter: blur(18px) saturate(140%);
+    @apply border border-white/55;
+  }
+  .glass-dark {
+    background: rgba(21, 19, 15, 0.55);
+    -webkit-backdrop-filter: blur(16px) saturate(130%);
+    backdrop-filter: blur(16px) saturate(130%);
+    @apply border border-white/10;
+  }
+
+  /* 3% film grain, used on dark panels so they do not read as flat CSS. */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.045;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Buttons ------------------------------------------------------------- */
+  .btn {
+    @apply relative inline-flex select-none items-center justify-center gap-2 rounded-pill
+           px-6 text-small font-semibold tracking-wide transition-all duration-300 ease-lux
+           disabled:pointer-events-none disabled:opacity-45;
+    min-height: 44px;
+  }
+  .btn-sm {
+    @apply px-4 text-tiny;
+    min-height: 36px;
+  }
+  .btn-lg {
+    @apply px-8 text-[0.9rem];
+    min-height: 52px;
+  }
+  .btn-primary {
+    @apply bg-ink text-canvas hover:bg-night-3;
+    box-shadow: 0 10px 26px -14px rgba(21, 19, 15, 0.7);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 16px 34px -14px rgba(21, 19, 15, 0.65);
+  }
+  .btn-accent {
+    @apply bg-accent-deep text-white hover:bg-accent;
+  }
+  .btn-ghost {
+    @apply border border-line bg-transparent text-ink hover:border-line-strong hover:bg-sunk/70;
+  }
+  .btn-glass {
+    @apply border border-white/50 text-ink;
+    background: rgba(251, 249, 245, 0.6);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+  .btn-link {
+    @apply text-small font-semibold text-accent-deep underline-offset-4 hover:underline;
+    min-height: auto;
+  }
+
+  /* Arrow that slides in on hover (used on primary CTAs) */
+  .btn-arrow svg {
+    transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .btn-arrow:hover svg {
+    transform: translateX(4px);
+  }
+
+  /* Form controls ------------------------------------------------------- */
+  .field {
+    @apply w-full rounded-sm border border-line bg-surface px-3.5 text-small text-ink
+           placeholder:text-muted-light transition-all duration-200
+           focus:border-accent focus:bg-white focus:shadow-focus focus:outline-none;
+    min-height: 44px;
+  }
+  .field-label {
+    @apply mb-1.5 block text-micro font-medium uppercase text-muted;
+  }
+  .field-error {
+    @apply mt-1.5 flex items-start gap-1.5 text-tiny text-danger;
+  }
+  .field-hint {
+    @apply mt-1.5 text-tiny text-muted;
+  }
+  .field-invalid {
+    @apply border-danger/60 bg-danger/[0.035];
+  }
+
+  /* Data display -------------------------------------------------------- */
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-pill border border-line bg-surface px-3 py-1.5
+           text-tiny font-medium text-ink-2 transition-colors duration-200;
+  }
+  .chip-active {
+    @apply border-accent bg-accent-faint text-accent-deep;
+  }
+  .pill {
+    @apply inline-flex items-center gap-1 rounded-pill px-2.5 py-1 text-[0.6875rem] font-semibold uppercase tracking-wider;
+  }
+  .divider {
+    @apply h-px w-full bg-line;
+  }
+
+  .table-lux {
+    @apply w-full border-collapse text-small;
+  }
+  .table-lux thead th {
+    @apply sticky top-0 z-10 border-y border-line bg-sunk/90 px-4 py-3 text-left align-bottom
+           text-micro font-semibold uppercase tracking-luxe text-muted backdrop-blur;
+  }
+  .table-lux tbody td {
+    @apply border-b border-line/70 px-4 py-3 align-middle text-ink-2;
+  }
+  .table-lux tbody tr {
+    transition: background-color 0.2s;
+  }
+  .table-lux tbody tr:hover {
+    background: rgba(236, 220, 192, 0.22);
+  }
+
+  /* Skeletons ----------------------------------------------------------- */
+  .skeleton {
+    @apply relative overflow-hidden rounded-sm bg-sunk;
+  }
+  .skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.72), transparent);
+    animation: shimmer 1.6s infinite;
+  }
+
+  /* Media --------------------------------------------------------------- */
+  .media-frame {
+    @apply relative overflow-hidden bg-sunk;
+    background-size: cover;
+    background-position: center;
+  }
+  .media-frame img {
+    @apply h-full w-full object-cover;
+  }
+  .scrim-b {
+    background-image: linear-gradient(to top, rgba(9, 8, 6, 0.82) 0%, rgba(9, 8, 6, 0.34) 42%, transparent 78%);
+  }
+  .scrim-t {
+    background-image: linear-gradient(to bottom, rgba(9, 8, 6, 0.55) 0%, transparent 55%);
+  }
+
+  /* Utility bits -------------------------------------------------------- */
+  .skip-link {
+    @apply fixed left-4 top-4 z-[100] -translate-y-24 rounded-pill bg-ink px-5 py-2.5 text-tiny
+           font-semibold text-canvas opacity-0 transition-all duration-200;
+  }
+  .skip-link:focus {
+    @apply translate-y-0 opacity-100;
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .thin-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(124, 115, 101, 0.4) transparent;
+  }
+  .thin-scroll::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+  }
+  .thin-scroll::-webkit-scrollbar-thumb {
+    background: rgba(124, 115, 101, 0.32);
+    border-radius: 99px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  .thin-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(124, 115, 101, 0.55);
+    background-clip: content-box;
+  }
+
+  .num {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0;
+  }
+
+  /* Section heading rules that grow in on scroll */
+  .rule-draw {
+    height: 1px;
+    background: linear-gradient(to right, var(--accent), rgba(176, 133, 66, 0));
+    transform-origin: left center;
+  }
+}
+
+/* ------------------------------------------------------------- keyframes */
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Custom cursor: hidden on touch, opt-in on pointer:fine devices only. */
+@media (hover: none), (pointer: coarse) {
+  .cursor-dot,
+  .cursor-ring {
+    display: none !important;
+  }
+}
+
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  border-radius: 999px;
+  will-change: transform;
+}
+.cursor-dot {
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  background: var(--accent);
+}
+.cursor-ring {
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border: 1px solid rgba(21, 19, 15, 0.35);
+  transition: width 0.28s cubic-bezier(0.22, 1, 0.36, 1), height 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    margin 0.28s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.28s, background-color 0.28s;
+}
+.cursor-ring[data-active='true'] {
+  width: 58px;
+  height: 58px;
+  margin: -29px 0 0 -29px;
+  border-color: rgba(176, 133, 66, 0.85);
+  background: rgba(176, 133, 66, 0.08);
+}
+@media (pointer: fine) {
+  body.has-custom-cursor,
+  body.has-custom-cursor a,
+  body.has-custom-cursor button {
+    cursor: none;
+  }
+}
+
+/* Sticky offset shared by navbar + hotel page bars */
+.sticky-offset {
+  scroll-margin-top: calc(var(--nav-h) + 16px);
+}
+
+/* --------------------------------------------------------- motion & a11y */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .ken-burns,
+  .animate-ken-burns {
+    animation: none !important;
+  }
+  .cursor-dot,
+  .cursor-ring {
+    display: none !important;
+  }
+  .grain::after {
+    display: none;
+  }
+}
+
+/* Windows high-contrast keeps the design legible without colour reliance. */
+@media (prefers-contrast: more) {
+  :root {
+    --line: #a89c86;
+  }
+  .card,
+  .glass {
+    border-color: #8d8271;
+  }
+  .btn-primary {
+    background: #000;
+  }
+}
