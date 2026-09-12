@@ -56,9 +56,7 @@ export function createApp() {
               },
             }
           : false,
-
       crossOriginEmbedderPolicy: false,
-
       crossOriginResourcePolicy: {
         policy: 'cross-origin',
       },
@@ -81,7 +79,6 @@ export function createApp() {
 
         return cb(new Error('Origin not allowed by CORS'));
       },
-
       credentials: true,
     }),
   );
@@ -112,31 +109,13 @@ export function createApp() {
     }),
   );
 
-  // ------------------------------------------------------------
-  // PRODUCTION FRONTEND
-  // ------------------------------------------------------------
-
-  // IMPORTANT:
-  // Render starts the server from the project root.
-  // Therefore the Vite build is located at:
-  //
-  // client/dist
-  //
-  // Using process.cwd() makes the path work correctly on Render.
-  const clientDist = path.resolve(process.cwd(), 'client/dist');
-
-  console.log(`[luxora] client dist: ${clientDist}`);
-  console.log(
-    `[luxora] client index exists: ${fs.existsSync(
-      path.join(clientDist, 'index.html'),
-    )}`,
-  );
+  // In production the SPA is served from the same origin.
+  const clientDist = path.resolve(__dirname, '../../client/dist');
 
   if (
     env.serveClient &&
     fs.existsSync(path.join(clientDist, 'index.html'))
   ) {
-    // Serve React/Vite static assets.
     app.use(
       express.static(clientDist, {
         index: false,
@@ -146,13 +125,11 @@ export function createApp() {
     );
 
     // React SPA fallback.
-    // API and uploads routes are excluded.
     app.get(/^(?!\/api|\/uploads).*/, (_req, res) => {
       res.set('Cache-Control', 'no-cache');
       res.sendFile(path.join(clientDist, 'index.html'));
     });
   } else {
-    // Frontend build not found.
     app.get('/', (_req, res) =>
       res
         .status(200)
