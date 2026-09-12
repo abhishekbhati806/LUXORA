@@ -1,0 +1,34 @@
+# Render blueprint — https://render.com/new?repo=<you>/luxora applies this automatically.
+# Prerequisite: a MongoDB Atlas URI (see docs/DEPLOYMENT.md §2).
+services:
+  - type: web
+    name: luxora
+    runtime: node
+    plan: free
+    rootDir: .
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/v1/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SERVE_CLIENT
+        value: "true"
+      - key: MONGO_URI
+        sync: false # set to your Atlas SRV string (secret)
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        value: "https://luxora.onrender.com" # match your service URL
+      - key: CLIENT_URL
+        value: "https://luxora.onrender.com"
+      - key: BCRYPT_ROUNDS
+        value: "12"
+      # Demo accounts: CHANGE these before going public, or set SEED_* yourself.
+      - key: SEED_ADMIN_PASSWORD
+        sync: false
+      - key: SEED_DEMO_PASSWORD
+        sync: false
