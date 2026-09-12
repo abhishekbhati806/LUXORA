@@ -1,0 +1,35 @@
+# dependencies
+node_modules/
+.npm/
+.pnpm-store/
+
+# builds & caches
+dist/
+build/
+*.tsbuildinfo
+.vite/
+coverage/
+
+# local runtime state
+.env
+.env.*
+!.env.example
+uploads/
+server/uploads/
+
+# editors & OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# logs
+*.log
+logs/
+npm-debug.log*
+
+# scratch & generated verification artifacts
+.screenshots/
+docs/screenshots/
+tmp/
