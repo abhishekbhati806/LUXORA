@@ -274,6 +274,11 @@ One process serves both API and SPA (`SERVE_CLIENT=true`), so a single dyno/cont
 npm ci && npm run build && npm start   # NODE_ENV=production, real JWT secrets, MONGO_URI=Atlas
 ```
 
+> **Full push-to-GitHub + hosting roadmap** (Render free tier, Atlas, Docker/VPS, CI, pre-launch
+> security checklist): **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)**. The repo ships `render.yaml`
+> (blueprint), `Dockerfile` and a GitHub Actions CI (`.github/workflows/ci.yml`) that re-runs every
+> suite below on each push.
+
 - Set `CORS_ORIGIN`/`CLIENT_URL` to your HTTPS origin; refresh cookies automatically gain `Secure` in production.
 - Configure Cloudinary vars for durable image uploads (hotels CRUD accepts them straight away); otherwise keep `uploads/` on a persistent volume.
 - Run `npm run seed` once for demo data — or point at your own collections and skip it.
